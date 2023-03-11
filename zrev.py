@@ -1,10 +1,17 @@
 import requests
 import re
+import random
+import urllib3
 from concurrent.futures import ThreadPoolExecutor
+from fake_useragent import UserAgent
+from urllib3.exceptions import InsecureRequestWarning
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
 def reverse_ip(ip):
     url = f"https://tools.webservertalk.com/?tool=reverseip&host={ip}"
-    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299"}
+    user_agent = UserAgent().random
+    headers = {"User-Agent": user_agent}
     try:
         response = requests.get(url, headers=headers, timeout=10, verify=False)
         if response.status_code == 200:
@@ -38,3 +45,4 @@ with open(file_name, 'r') as f:
 scan_ips(ips, threads)
 
 print("Reverse IP lookup done. Result saved to reversed.txt")
+print("If you only got 1 domain, try to change your IP")
